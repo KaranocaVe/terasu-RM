@@ -1,0 +1,16 @@
+# Build artifacts
+/rmirror
+/rmirror.exe
+/rmirrord
+/rmirrord.exe
+/dist/
+/*.exe
+/*.test
+/*.out
+
+# Logs
+/*.log
+
+# Local scratch
+/.tmp-prom/
+/.tmp-terasu/
