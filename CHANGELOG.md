@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.0.3 (2026-01-22)
+
+- Add badges for CI, release, and version (d48b89e)
+
+
 ## v0.0.2 (2026-01-22)
 
 - docs: update project description in README.md (0e019e2)
