@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/rewriting-mirror.schema.json",
+  "title": "Rewriting Mirror Config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "listen": {"type": "string"},
+    "public_base_url": {"type": "string"},
+    "access_log": {"type": "boolean"},
+    "tls": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cert_file": {"type": "string"},
+        "key_file": {"type": "string"}
+      }
+    },
+    "timeouts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "read_header_timeout": {"type": "string"},
+        "read_timeout": {"type": "string"},
+        "write_timeout": {"type": "string"},
+        "idle_timeout": {"type": "string"},
+        "shutdown_timeout": {"type": "string"},
+        "max_header_bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "transport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "first_fragment_len": {"type": "integer", "minimum": 0, "maximum": 255},
+        "dial_timeout": {"type": "string"},
+        "keepalive": {"type": "string"},
+        "max_idle_conns": {"type": "integer", "minimum": 0},
+        "max_idle_conns_per_host": {"type": "integer", "minimum": 0},
+        "max_conns_per_host": {"type": "integer", "minimum": 0},
+        "idle_conn_timeout": {"type": "string"},
+        "tls_handshake_timeout": {"type": "string"},
+        "response_header_timeout": {"type": "string"},
+        "expect_continue_timeout": {"type": "string"},
+        "force_http2": {"type": "boolean"},
+        "disable_compression": {"type": "boolean"}
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_inflight": {"type": "integer", "minimum": 0},
+        "max_inflight_wait": {"type": "string"}
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {"type": "string"},
+          "public_prefix": {"type": "string"},
+          "upstream": {"type": "string"},
+          "preserve_host": {"type": "boolean"}
+        },
+        "required": ["upstream"]
+      }
+    }
+  },
+  "required": ["routes"]
+}
