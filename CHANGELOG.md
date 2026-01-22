@@ -1,2 +1,19 @@
 # Changelog
 
+## v0.0.1 (2026-01-22)
+
+- ci: update workflows for new structure and add release pipeline (2498953)
+- chore: add project metadata and initialization files (b19bc70)
+- feat: add rmirrord daemon for managing multiple instances (47bf91c)
+- refactor: restructure repository and update module path (7a59cb9)
+- docs: add README and example configurations (66d375c)
+- test: add unit tests for mirror and transport (4c21fca)
+- feat(cmd): implement CLI entry point and hot reloading (f374844)
+- feat(internal): add observability with structured logging and metrics (1d58d1d)
+- feat(internal): add configuration management and schema (55714d6)
+- feat(internal): implement transport layer with TLS fragmentation and fallbacks (dd98352)
+- feat(internal): implement core mirror logic and routing (4b7ce55)
+- init: project structure and dependencies (612e13f)
+- temp (1d57618)
+
+
