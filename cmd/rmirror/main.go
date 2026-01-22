@@ -18,7 +18,7 @@ import (
 	"syscall"
 	"time"
 
-	"rewriting-mirror/internal/mirror"
+	"github.com/KaranocaVe/terasu-RM/internal/mirror"
 )
 
 var (

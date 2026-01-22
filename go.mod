@@ -1,4 +1,4 @@
-module rewriting-mirror
+module github.com/KaranocaVe/terasu-RM
 
 go 1.22.0
 

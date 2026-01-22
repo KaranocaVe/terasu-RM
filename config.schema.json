@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.local/rewriting-mirror.schema.json",
+  "$id": "https://example.local/terasu-rewriting-mirror.schema.json",
   "title": "Rewriting Mirror Config",
   "type": "object",
   "additionalProperties": false,
