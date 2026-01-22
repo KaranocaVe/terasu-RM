@@ -1,0 +1,201 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    outputs:
+      next_version: ${{ steps.prep.outputs.next_version }}
+      prev_tag: ${{ steps.prep.outputs.prev_tag }}
+      skip: ${{ steps.prep.outputs.skip }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
+          cache-dependency-path: go.sum
+      - name: Prepare version
+        id: prep
+        run: |
+          set -euo pipefail
+          git fetch --tags --force
+          last_tag=$(git tag --list 'v*' --sort=v:refname | tail -n 1 || true)
+          if [ -n "$last_tag" ]; then
+            base_version="${last_tag#v}"
+            commits=$(git rev-list "${last_tag}..HEAD" --count)
+          else
+            if [ -f VERSION ]; then
+              base_version="$(cat VERSION)"
+            else
+              base_version="0.0.0"
+            fi
+            commits=$(git rev-list HEAD --count)
+          fi
+          if [ "$commits" -eq 0 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! echo "$base_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "invalid base version: $base_version" >&2
+            exit 1
+          fi
+          IFS='.' read -r major minor patch <<< "$base_version"
+          patch=$((patch + 1))
+          next_version="${major}.${minor}.${patch}"
+          notes_file="release-notes.txt"
+          if [ -n "$last_tag" ]; then
+            git log --no-merges --pretty=format:'- %s (%h)' \
+              --grep '^chore\(release\):' --invert-grep \
+              "${last_tag}..HEAD" > "$notes_file"
+          else
+            git log --no-merges --pretty=format:'- %s (%h)' \
+              --grep '^chore\(release\):' --invert-grep > "$notes_file"
+          fi
+          echo "next_version=$next_version" >> "$GITHUB_OUTPUT"
+          echo "prev_tag=$last_tag" >> "$GITHUB_OUTPUT"
+          echo "notes_file=$notes_file" >> "$GITHUB_OUTPUT"
+      - name: Update VERSION and CHANGELOG
+        if: steps.prep.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          next_version="${{ steps.prep.outputs.next_version }}"
+          echo "$next_version" > VERSION
+          today=$(date -u +%Y-%m-%d)
+          tmp=$(mktemp)
+          printf "# Changelog\n\n## v%s (%s)\n\n" "$next_version" "$today" > "$tmp"
+          cat "${{ steps.prep.outputs.notes_file }}" >> "$tmp"
+          printf "\n\n" >> "$tmp"
+          if [ -f CHANGELOG.md ]; then
+            tail -n +2 CHANGELOG.md >> "$tmp"
+          fi
+          mv "$tmp" CHANGELOG.md
+      - name: Test
+        if: steps.prep.outputs.skip != 'true'
+        run: go test ./...
+      - name: Commit and tag
+        if: steps.prep.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add VERSION CHANGELOG.md
+          git commit -m "chore(release): v${{ steps.prep.outputs.next_version }}"
+          git tag -a "v${{ steps.prep.outputs.next_version }}" -m "v${{ steps.prep.outputs.next_version }}"
+          git push origin HEAD
+          git push origin "v${{ steps.prep.outputs.next_version }}"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: prepare
+    if: needs.prepare.result == 'success' && needs.prepare.outputs.skip != 'true'
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+          - goos: windows
+            goarch: arm64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Checkout tag
+        run: |
+          git fetch --tags --force
+          git checkout "v${{ needs.prepare.outputs.next_version }}"
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
+          cache-dependency-path: go.sum
+      - name: Build
+        run: |
+          mkdir -p dist
+          ext=""
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            ext=".exe"
+          fi
+          version="v${{ needs.prepare.outputs.next_version }}"
+          commit="$(git rev-parse --short HEAD)"
+          date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          out="dist/rmirror-${version}-${{ matrix.goos }}-${{ matrix.goarch }}${ext}"
+          out_daemon="dist/rmirrord-${version}-${{ matrix.goos }}-${{ matrix.goarch }}${ext}"
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
+            go build -trimpath -ldflags "-s -w -X main.version=${version} -X main.commit=${commit} -X main.date=${date}" \
+            -o "${out}" ./cmd/rmirror
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
+            go build -trimpath -ldflags "-s -w -X main.version=${version} -X main.commit=${commit} -X main.date=${date}" \
+            -o "${out_daemon}" ./cmd/rmirrord
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rmirror-${{ needs.prepare.outputs.next_version }}-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/*-v${{ needs.prepare.outputs.next_version }}-${{ matrix.goos }}-${{ matrix.goarch }}*
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - build
+    if: needs.prepare.result == 'success' && needs.prepare.outputs.skip != 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Checkout tag
+        run: |
+          git fetch --tags --force
+          git checkout "v${{ needs.prepare.outputs.next_version }}"
+      - name: Generate release notes
+        run: |
+          set -euo pipefail
+          prev_tag="${{ needs.prepare.outputs.prev_tag }}"
+          tag="v${{ needs.prepare.outputs.next_version }}"
+          notes="release-notes.md"
+          printf "## Changelog\n\n" > "$notes"
+          if [ -n "$prev_tag" ]; then
+            git log --no-merges --pretty=format:'- %s (%h)' \
+              --grep '^chore\(release\):' --invert-grep \
+              "${prev_tag}..${tag}" >> "$notes"
+          else
+            git log --no-merges --pretty=format:'- %s (%h)' \
+              --grep '^chore\(release\):' --invert-grep \
+              "${tag}" >> "$notes"
+          fi
+          printf "\n" >> "$notes"
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.prepare.outputs.next_version }}
+          name: v${{ needs.prepare.outputs.next_version }}
+          body_path: release-notes.md
+          files: dist/*
