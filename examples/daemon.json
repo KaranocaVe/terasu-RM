@@ -1,0 +1,22 @@
+{
+  "shutdown_timeout": "10s",
+  "restart": {
+    "enabled": true,
+    "min_delay": "1s",
+    "max_delay": "30s"
+  },
+  "instances": [
+    {
+      "name": "docker",
+      "config": "docker.json"
+    },
+    {
+      "name": "github",
+      "config": "github.json"
+    },
+    {
+      "name": "huggingface",
+      "config": "huggingface.json"
+    }
+  ]
+}
