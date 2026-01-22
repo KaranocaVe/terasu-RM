@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.0.5 (2026-01-22)
+
+- Update README with download and Docker instructions (9a61de2)
+
+
 ## v0.0.4 (2026-01-22)
 
 - Add usage section to README (87e6f72)
