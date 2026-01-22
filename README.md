@@ -171,3 +171,7 @@ RestartSec=3
 [Install]
 WantedBy=multi-user.target
 ```
+
+## 自豪地使用
+
+github.com/fumiama/terasu
