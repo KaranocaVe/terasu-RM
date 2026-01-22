@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.0.6 (2026-01-22)
+
+- 更新 README.md (eea91c8)
+
+
 ## v0.0.5 (2026-01-22)
 
 - Update README with download and Docker instructions (9a61de2)
