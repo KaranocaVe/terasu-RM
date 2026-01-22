@@ -1,9 +1,7 @@
 # TeRaSu Rewriting Mirror
 
-TeRaSu Rewriting Mirror 是一个本地 HTTP 反向代理，通过重写上游 URL 来实现
-“本地入口 + 端到端 TLS” 的访问方式，避免 MITM 证书部署问题。
-
-这份文档只讲怎么用。
+TeRaSu Rewriting Mirror 是一个本地加速镜像：在本机提供自加速镜像，
+用来在中国大陆网络下加速 Docker 镜像、GitHub 代码仓库和 Hugging Face 模型等资源的拉取。
 
 ## 快速开始（单实例）
 
