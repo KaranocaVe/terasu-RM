@@ -1,0 +1,24 @@
+{
+  "listen": "127.0.0.1:5000",
+  "access_log": true,
+  "transport": {
+    "first_fragment_len": 3
+  },
+  "routes": [
+    {
+      "name": "docker-registry",
+      "public_prefix": "/",
+      "upstream": "https://registry-1.docker.io"
+    },
+    {
+      "name": "docker-auth",
+      "public_prefix": "/_auth",
+      "upstream": "https://auth.docker.io"
+    },
+    {
+      "name": "docker-blob",
+      "public_prefix": "/_blob",
+      "upstream": "https://production.cloudflare.docker.com"
+    }
+  ]
+}

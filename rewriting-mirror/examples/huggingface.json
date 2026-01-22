@@ -1,0 +1,19 @@
+{
+  "listen": "127.0.0.1:5001",
+  "access_log": true,
+  "transport": {
+    "first_fragment_len": 3
+  },
+  "routes": [
+    {
+      "name": "huggingface",
+      "public_prefix": "/",
+      "upstream": "https://huggingface.co"
+    },
+    {
+      "name": "huggingface-lfs",
+      "public_prefix": "/_lfs",
+      "upstream": "https://cdn-lfs.huggingface.co"
+    }
+  ]
+}

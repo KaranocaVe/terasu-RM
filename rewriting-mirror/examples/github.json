@@ -1,0 +1,14 @@
+{
+  "listen": "127.0.0.1:5002",
+  "access_log": true,
+  "transport": {
+    "first_fragment_len": 3
+  },
+  "routes": [
+    {
+      "name": "github",
+      "public_prefix": "/",
+      "upstream": "https://github.com"
+    }
+  ]
+}
