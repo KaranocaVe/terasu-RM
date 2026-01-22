@@ -7,6 +7,7 @@
 
 TeRaSu Rewriting Mirror 是一个本地加速镜像：在本机提供自加速镜像，
 用来在中国大陆网络下加速 Docker 镜像、GitHub 代码仓库和 Hugging Face 模型等资源的拉取。
+相比其他方案，这个项目的实现不需要任何特权。
 
 ## 快速开始（单实例）
 
