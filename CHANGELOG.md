@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.0.4 (2026-01-22)
+
+- Add usage section to README (87e6f72)
+
+
 ## v0.0.3 (2026-01-22)
 
 - Add badges for CI, release, and version (d48b89e)
