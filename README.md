@@ -16,6 +16,8 @@ TeRaSu Rewriting Mirror 是一个本地加速镜像：在本机提供自加速�
 GOPROXY=https://goproxy.cn,direct go build ./cmd/rmirror
 ```
 
+也可以从Release下载
+
 启动 Docker 镜像源加速：
 
 ```
