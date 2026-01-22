@@ -9,6 +9,38 @@ TeRaSu Rewriting Mirror 是一个本地加速镜像：在本机提供自加速�
 用来在中国大陆网络下加速 Docker 镜像、GitHub 代码仓库和 Hugging Face 模型等资源的拉取。
 相比其他方案，这个项目的实现不需要任何特权。
 
+## 一键安装
+
+脚本会自动识别系统/架构并下载 rmirror + rmirrord 到默认目录。
+默认会自动启动 Docker 加速实例，并输出 Docker 配置文件的修改指引。
+
+Linux/macOS：
+
+```
+curl -fsSL https://raw.githubusercontent.com/KaranocaVe/terasu-RM/main/scripts/install.sh | bash
+```
+
+Windows（PowerShell）：
+
+```
+curl.exe -fsSL -o "$env:TEMP\\terasu-install.ps1" https://raw.githubusercontent.com/KaranocaVe/terasu-RM/main/scripts/install.ps1; powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\\terasu-install.ps1"
+```
+
+Docker 配置文件位置与输出日志：
+
+- macOS/Linux: `~/.config/rmirror/docker.json`（日志：`~/.config/rmirror/rmirror-docker.log`）
+- Windows: `%USERPROFILE%\.config\rmirror\docker.json`（日志：`%USERPROFILE%\.config\rmirror\rmirror-docker.log`）
+
+自定义安装目录/版本/组件（示例）：
+
+```
+curl -fsSL https://raw.githubusercontent.com/KaranocaVe/terasu-RM/main/scripts/install.sh | bash -s -- -b ~/.local/bin -v v0.1.2 --component rmirror --no-docker
+```
+
+```
+curl.exe -fsSL -o "$env:TEMP\\terasu-install.ps1" https://raw.githubusercontent.com/KaranocaVe/terasu-RM/main/scripts/install.ps1; powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\\terasu-install.ps1" -Version v0.1.2 -Component rmirror -SkipDocker
+```
+
 ## 快速开始（单实例）
 
 构建二进制：
