@@ -1,5 +1,10 @@
 # TeRaSu Rewriting Mirror
 
+[![ci](https://github.com/KaranocaVe/terasu-RM/actions/workflows/ci.yml/badge.svg)](https://github.com/KaranocaVe/terasu-RM/actions/workflows/ci.yml)
+[![release](https://github.com/KaranocaVe/terasu-RM/actions/workflows/release.yml/badge.svg)](https://github.com/KaranocaVe/terasu-RM/actions/workflows/release.yml)
+[![release-version](https://img.shields.io/github/v/release/KaranocaVe/terasu-RM?include_prereleases&sort=semver)](https://github.com/KaranocaVe/terasu-RM/releases)
+[![license](https://img.shields.io/github/license/KaranocaVe/terasu-RM)](LICENSE)
+
 TeRaSu Rewriting Mirror 是一个本地加速镜像：在本机提供自加速镜像，
 用来在中国大陆网络下加速 Docker 镜像、GitHub 代码仓库和 Hugging Face 模型等资源的拉取。
 
