@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.0.2 (2026-01-22)
+
+- docs: update project description in README.md (0e019e2)
+
+
 ## v0.0.1 (2026-01-22)
 
 - ci: update workflows for new structure and add release pipeline (2498953)
