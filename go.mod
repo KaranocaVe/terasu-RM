@@ -1,6 +1,6 @@
 module github.com/KaranocaVe/terasu-RM
 
-go 1.22.0
+go 1.25.0
 
 require (
 	github.com/fumiama/terasu v0.0.0-20251006080703-541b84ca4a5f
@@ -16,8 +16,8 @@ require (
 	github.com/prometheus/common v0.62.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 )
